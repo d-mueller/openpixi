@@ -66,11 +66,31 @@ public class SU2Matrix implements LinkMatrix {
 	 * @param arg SU2Matrix which is added to the current SU2Matrix instance.
 	 * @return Sum of the SU2Matrix instances.
 	 */
-	public LinkMatrix add(LinkMatrix arg) {
+	public SU2Matrix add(LinkMatrix arg) {
 		
 		SU2Matrix b = new SU2Matrix();
 		for (int i = 0; i < 4; i++) {
 			b.set(i, e[i] + arg.get(i));
+		}
+		return b;
+
+	}
+
+	/**
+	 * Adds an array of SU2Matrix instances to the current SU2Matrix instance and returns the result as a copy.
+	 * The result is not a valid SU2 matrix since the parameter norm will not be one in general.
+	 * This method does not change the original SU2Matrix instance.
+	 *
+	 * @param args	Array of SU2Matrix which is added to the current SU2Matrix instance.
+	 * @return	Sum of the SU2Matrix instances.
+	 */
+	public SU2Matrix add(LinkMatrix[] args) {
+
+		SU2Matrix b = new SU2Matrix();
+		b.set(this);
+		for (int i = 0; i <args.length; i++) {
+			//Warning: this is probably slow and should be optimized to reduce the number of created instances.
+			b = b.add(args[i]);
 		}
 		return b;
 
@@ -84,7 +104,7 @@ public class SU2Matrix implements LinkMatrix {
 	 * @param arg SU2Matrix which is subtracted from the current SU2Matrix instance.
 	 * @return Difference of the SU2Matrix instances.
 	 */
-	public LinkMatrix sub(LinkMatrix arg) {
+	public SU2Matrix sub(LinkMatrix arg) {
 		
 		SU2Matrix b = new SU2Matrix();
 		for (int i = 0; i < 4; i++) {
@@ -138,7 +158,7 @@ public class SU2Matrix implements LinkMatrix {
 	 *
 	 * @return  Hermitian conjugate of the current instance.
 	 */
-	public LinkMatrix adj() {
+	public SU2Matrix adj() {
 		SU2Matrix b = new SU2Matrix(this);
 		for (int i = 1; i < 4; i++)
 		{
@@ -194,7 +214,7 @@ public class SU2Matrix implements LinkMatrix {
 	 * @param number    real number to be multiplied with.
 	 * @return          product of the scalar multiplication.
 	 */
-	public LinkMatrix mult(double number) {
+	public SU2Matrix mult(double number) {
 
 		SU2Matrix b = new SU2Matrix();
 		for (int i = 0; i < 4; i++) {
@@ -214,7 +234,7 @@ public class SU2Matrix implements LinkMatrix {
 	 * @param arg SU2Matrix instance used for post-multiplication.
 	 * @return  Result of the multiplication.
 	 */
-	public LinkMatrix mult(LinkMatrix arg) {
+	public SU2Matrix mult(LinkMatrix arg) {
 
 		SU2Matrix b = new SU2Matrix();
 		b.e[0] = e[0] * arg.get(0) - e[1] * arg.get(1) - e[2] * arg.get(2) - e[3] * arg.get(3);
@@ -281,6 +301,26 @@ public class SU2Matrix implements LinkMatrix {
 		field.set(2, this.e[3]);
 
 		return field;
+	}
+
+	/**
+	 * Returns the zero matrix.
+	 *
+	 * @return	Instance of a zero matrix
+	 */
+	public SU2Matrix getZeroMatrix()
+	{
+		return new SU2Matrix(0.0, 0.0, 0.0, 0.0);
+	}
+
+	/**
+	 * Returns the unit matrix.
+	 *
+	 * @return Instance of a unit matrix
+	 */
+	public SU2Matrix getUnitMatrix()
+	{
+		return new SU2Matrix(1.0, 0.0, 0.0, 0.0);
 	}
 
 
