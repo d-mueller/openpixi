@@ -1,11 +1,8 @@
 package org.openpixi.pixi.physics.grid;
 
-
 public interface LinkMatrix {
 
 	LinkMatrix add(LinkMatrix a);
-
-	LinkMatrix add(LinkMatrix[] a);
 
 	LinkMatrix sub(LinkMatrix a);
 
@@ -29,9 +26,5 @@ public interface LinkMatrix {
 	double get (int j);
 	
 	YMField getLinearizedAlgebraElement();
-
-	LinkMatrix getZeroMatrix();
-
-	LinkMatrix getUnitMatrix();
 
 }
