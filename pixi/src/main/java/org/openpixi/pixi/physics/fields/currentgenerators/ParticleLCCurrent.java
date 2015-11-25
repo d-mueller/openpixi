@@ -142,9 +142,12 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 	 * @param s
 	 */
 	public void applyCurrent(Simulation s) {
+		swapParticles();
+		moveParticles();
 		evolveCharges(s);
 		removeParticles(s);
-		interpolateChargesAndCurrents(s);
+		interpolateChargesDensity(s);
+		interpolateCurrentDensity(s);
 	}
 
 	/**
@@ -356,7 +359,7 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 	 *
 	 * @param s
 	 */
-	private void interpolateChargesAndCurrents(Simulation s) {
+	private void interpolateCurrentDensity(Simulation s) {
 		double c = as / at;
 		// Interpolate particle charges to charge density on the grid
 		for(Particle p : particles) {
