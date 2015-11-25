@@ -324,6 +324,10 @@ public class Simulation {
 		grid.resetCurrent();
 		grid.resetCharge();
 		interpolation.interpolateToGrid(particles, grid, tstep);
+
+		// Gauge links are updated before electric field so that they are available to the current generators.
+		grid.updateLinks(tstep);
+
 		// Generate external currents on the grid!!
 		for (ICurrentGenerator c: currentGenerators)
 		{
