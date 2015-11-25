@@ -240,13 +240,6 @@ public class Simulation {
 			(e.g. check if Gauss law is fulfilled.)
 		 */
 
-		// Copy current generators from Settings.
-		currentGenerators = settings.getCurrentGenerators();
-		// Initialize external currents on the grid!!
-		for (ICurrentGenerator c: currentGenerators) {
-			c.initializeCurrent(this, currentGenerators.size());
-		}
-
 		/**
 		 * In order to read out the initial state without specifying the Unext(t = at/2) links by hand we calculate them
 		 * according to the equations of motion from the electric fields at t = 0 and gauge links U(t = -at/2). We also
@@ -254,6 +247,16 @@ public class Simulation {
 		 * at t = -at/2) and determine new velocities at t = at/2.
 		 */
 		grid.updateLinks(tstep);
+
+
+		// Copy current generators from Settings.
+		currentGenerators = settings.getCurrentGenerators();
+		// Initialize external currents on the grid!!
+		for (ICurrentGenerator c: currentGenerators) {
+			c.initializeCurrent(this, currentGenerators.size());
+		}
+
+
 
 		interpolation.interpolateToParticle(particles, grid);
 
