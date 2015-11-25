@@ -256,6 +256,7 @@ public class Simulation {
 			c.initializeCurrent(this, currentGenerators.size());
 		}
 
+		grid.updateLinks(tstep);
 
 
 		interpolation.interpolateToParticle(particles, grid);

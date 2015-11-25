@@ -165,7 +165,7 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 		particles = new ArrayList<Particle>();
 
 		// Traverse through charge density and add particles by sampling the charge distribution
-		double t0 = - 1*at;
+		double t0 = - 0*at;
 		double FIX_ROUND_ERRORS = 10E-12 * as;
 		for (int i = 0; i < s.grid.getTotalNumberOfCells(); i++) {
 			for (int j = 0; j < particlesPerLink; j++) {
@@ -349,9 +349,12 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 			GroupElement U0New = UNew.getAlgebraElement().mult(d0New).getLink();
 			GroupElement U1New = UNew.getAlgebraElement().mult(d1New).getLink().adj();
 
+			GroupElement U0Old = UOld.getAlgebraElement().mult(d0Old).getLink();
+			GroupElement U1Old = UOld.getAlgebraElement().mult(d1Old).getLink().adj();
+
 			// Charge interpolation to neighbouring lattice sites
-			AlgebraElement Q0New = p.Q1.act(U0New).mult(d1New);
-			AlgebraElement Q1New = p.Q1.act(U1New).mult(d0New);
+			AlgebraElement Q0New = p.Q0.act(U0Old).mult(d1Old);
+			AlgebraElement Q1New = p.Q0.act(U1Old).mult(d0Old);
 
 			s.grid.addRho(cellIndex0New, Q0New);
 			s.grid.addRho(cellIndex1New, Q1New);
@@ -409,6 +412,7 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 				AlgebraElement Q0Old = p.Q0.act(U0Old).mult(d1Old);
 
 				AlgebraElement J = Q0New.sub(Q0Old).mult(-c);
+				J = p.Q0.act(U0Old).mult(p.vel[direction]);
 				s.grid.addJ(cellIndex0New, direction, J);
 
 			} else {
