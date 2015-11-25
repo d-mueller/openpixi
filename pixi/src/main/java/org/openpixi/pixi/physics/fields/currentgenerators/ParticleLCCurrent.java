@@ -131,7 +131,11 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 
 		// 3) Interpolate grid charge and current density.
 		initializeParticles(s, 1);
-		applyCurrent(s);
+		moveParticles();
+		evolveCharges(s);
+		removeParticles(s);
+		interpolateChargesDensity(s);
+		interpolateCurrentDensity(s);
 
 		// You're done: charge density, current density and the fields are set up correctly.
 	}
@@ -161,7 +165,7 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 		particles = new ArrayList<Particle>();
 
 		// Traverse through charge density and add particles by sampling the charge distribution
-		double t0 = - 2*at;
+		double t0 = - 1*at;
 		double FIX_ROUND_ERRORS = 10E-12 * as;
 		for (int i = 0; i < s.grid.getTotalNumberOfCells(); i++) {
 			for (int j = 0; j < particlesPerLink; j++) {
@@ -213,7 +217,7 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 		charge2 = charge2.mult(x);
 
 
-		GroupElement U = s.grid.getU(index, direction);
+		GroupElement U = s.grid.getUnext(index, direction);
 		GroupElement U1 = U.getAlgebraElement().mult(x).getLink().adj();
 		GroupElement U2 = U.getAlgebraElement().mult(1.0 - x).getLink();
 
@@ -223,7 +227,7 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 
 		charge1.addAssign(charge2);
 
-		return charge1;
+		return charge1.copy();
 	}
 
 	private void swapParticles(){
@@ -258,9 +262,9 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 				double d = Math.abs(p.vel[direction] * at / as);
 				GroupElement U;
 				if(p.vel[direction] > 0) {
-					U = s.grid.getU(cellIndexNew, direction).getAlgebraElement().mult(d).getLink();
+					U = s.grid.getUnext(cellIndexNew, direction).getAlgebraElement().mult(d).getLink();
 				} else {
-					U = s.grid.getU(cellIndexNew, direction).getAlgebraElement().mult(d).getLink().adj();
+					U = s.grid.getUnext(cellIndexNew, direction).getAlgebraElement().mult(d).getLink().adj();
 				}
 				p.evolve(U);
 			} else {
@@ -274,8 +278,8 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 					double d0 = Math.abs(longitudinalIndexNew - p.pos0[direction] / as);
 					double d1 = Math.abs(longitudinalIndexNew - p.pos1[direction] / as);
 
-					GroupElement U0 = s.grid.getU(cellIndexOld, direction).getAlgebraElement().mult(d0).getLink();
-					GroupElement U1 = s.grid.getU(cellIndexNew, direction).getAlgebraElement().mult(d1).getLink();
+					GroupElement U0 = s.grid.getUnext(cellIndexOld, direction).getAlgebraElement().mult(d0).getLink();
+					GroupElement U1 = s.grid.getUnext(cellIndexNew, direction).getAlgebraElement().mult(d1).getLink();
 					GroupElement U = U0.mult(U1);
 
 					p.evolve(U);
@@ -285,8 +289,8 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 					double d0 = Math.abs(longitudinalIndexOld - p.pos0[direction] / as);
 					double d1 = Math.abs(longitudinalIndexOld - p.pos1[direction] / as);
 
-					GroupElement U0 = s.grid.getU(cellIndexOld, direction).getAlgebraElement().mult(d0).getLink();
-					GroupElement U1 = s.grid.getU(cellIndexNew, direction).getAlgebraElement().mult(d1).getLink();
+					GroupElement U0 = s.grid.getUnext(cellIndexOld, direction).getAlgebraElement().mult(d0).getLink();
+					GroupElement U1 = s.grid.getUnext(cellIndexNew, direction).getAlgebraElement().mult(d1).getLink();
 					GroupElement U = U0.mult(U1);
 
 					p.evolve(U.adj());
@@ -339,7 +343,7 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 
 			// Links at old and new position
 			GroupElement UOld = s.grid.getUnext(cellIndex0Old, direction);
-			GroupElement UNew = s.grid.getU(cellIndex0New, direction);
+			GroupElement UNew = s.grid.getUnext(cellIndex0New, direction);
 
 			// Interpolated gauge links
 			GroupElement U0New = UNew.getAlgebraElement().mult(d0New).getLink();
@@ -384,7 +388,7 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 
 			// Links at old and new position
 			GroupElement UOld = s.grid.getUnext(cellIndex0Old, direction);
-			GroupElement UNew = s.grid.getU(cellIndex0New, direction);
+			GroupElement UNew = s.grid.getUnext(cellIndex0New, direction);
 
 			// Interpolated gauge links
 			GroupElement U0New = UNew.getAlgebraElement().mult(d0New).getLink();
@@ -415,7 +419,7 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 				if(longitudinalIndexNew > longitudinalIndexOld) {
 					// Two-cell move right
 					AlgebraElement JOld = Q0Old.mult(c);
-					AlgebraElement JNew = JOld.act(s.grid.getU(cellIndex0Old,direction).adj());
+					AlgebraElement JNew = JOld.act(s.grid.getUnext(cellIndex0Old,direction).adj());
 					JNew.addAssign(Q0New.sub(Q1Old).mult(-c));
 
 					s.grid.addJ(cellIndex0Old, direction, JOld);
