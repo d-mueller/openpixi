@@ -223,6 +223,18 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 		return charge1;
 	}
 
+	private void swapParticles(){
+		for(Particle p : particles) {
+			p.swap();
+		}
+	}
+
+	private void moveParticles(){
+		for(Particle p : particles) {
+			p.move(at);
+		}
+	}
+
 	/**
 	 * Evolves the particle positions and charges according to the Wong equations.
 	 *
@@ -231,11 +243,6 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 	private void evolveCharges(Simulation s) {
 		double totalCharge = 0.0;
 		for(Particle p : particles) {
-			// swap variables for charge and position
-			p.swap();
-			// move particle position according to velocity
-			p.move(at);
-
 			// Evolve particle charges
 			// check if one cell or two cell move
 			int longitudinalIndexOld = (int) (p.pos0[direction] / as);
@@ -306,6 +313,44 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 		particles.removeAll(removeList);
 	}
 
+	private void interpolateChargesDensity(Simulation s) {
+		for(Particle p : particles) {
+			// 1) Charge interpolation
+
+			// "Floored" grid points of the particle
+			int[] gridPosOld = GridFunctions.flooredGridPoint(p.pos0, as);
+			int[] gridPosNew = GridFunctions.flooredGridPoint(p.pos1, as);
+
+			// Cell indices
+			int cellIndex0Old = s.grid.getCellIndex(gridPosOld);
+			int cellIndex1Old = s.grid.shift(cellIndex0Old, direction, 1);
+
+			int cellIndex0New = s.grid.getCellIndex(gridPosNew);
+			int cellIndex1New = s.grid.shift(cellIndex0New, direction, 1);
+
+			// Relative distances to the lattice sites
+			double d0New = p.pos1[direction] / as - gridPosNew[direction];
+			double d1New = 1 - d0New;
+			double d0Old = p.pos0[direction] / as - gridPosOld[direction];
+			double d1Old = 1 - d0Old;
+
+			// Links at old and new position
+			GroupElement UOld = s.grid.getUnext(cellIndex0Old, direction);
+			GroupElement UNew = s.grid.getU(cellIndex0New, direction);
+
+			// Interpolated gauge links
+			GroupElement U0New = UNew.getAlgebraElement().mult(d0New).getLink();
+			GroupElement U1New = UNew.getAlgebraElement().mult(d1New).getLink().adj();
+
+			// Charge interpolation to neighbouring lattice sites
+			AlgebraElement Q0New = p.Q1.act(U0New).mult(d1New);
+			AlgebraElement Q1New = p.Q1.act(U1New).mult(d0New);
+
+			s.grid.addRho(cellIndex0New, Q0New);
+			s.grid.addRho(cellIndex1New, Q1New);
+		}
+	}
+
 	/**
 	 * Interpolates the particle charges to the grid and computes charge conserving currents.
 	 *
@@ -345,9 +390,6 @@ public class ParticleLCCurrent implements ICurrentGenerator {
 			// Charge interpolation to neighbouring lattice sites
 			AlgebraElement Q0New = p.Q1.act(U0New).mult(d1New);
 			AlgebraElement Q1New = p.Q1.act(U1New).mult(d0New);
-
-			s.grid.addRho(cellIndex0New, Q0New);
-			s.grid.addRho(cellIndex1New, Q1New);
 
 			// 2) Charge conserving current calculation
 
