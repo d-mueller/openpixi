@@ -1,6 +1,6 @@
 simulationType: wong 1d ngp
 gridStep: 1
-couplingConstant: 1
+couplingConstant: .02
 numberOfDimensions: 1
 numberOfColors: 2
 numberOfThreads: 8
@@ -12,67 +12,74 @@ duration: 0
 streams:
   - particle:
       position: [0]
-      velocity: [-100]
+      velocity: [-1]
       r: 1.0
       m: 10.0
       q: [1.0, -0.0, 0.0]
       color: "red"
     randomPositions: [512]
+    randomGaussVelocities: [.01]
     number: 2000
+
   - particle:
       position: [0]
-      velocity: [100]
+      velocity: [1]
       r: 1.0
       m: 10.0
       q: [-1.0, 0.0, 0.0]
-      color: "red"
+      color: "blue"
     randomPositions: [512]
+    randomGaussVelocities: [.01]
     number: 2000
+
   - particle:
       position: [0]
-      velocity: [-100]
+      velocity: [-1]
       r: 1.0
       m: 10.0
       q: [0.0, -1.0, 0.0]
-      color: "blue"
+      color: "red"
     randomPositions: [512]
+    randomGaussVelocities: [.01]
     number: 2000
+
   - particle:
       position: [0]
-      velocity: [100]
+      velocity: [1]
       r: 1.0
       m: 10.0
       q: [-0.0, 1.0, 0.0]
       color: "blue"
     randomPositions: [512]
+    randomGaussVelocities: [.01]
     number: 2000
-  - particle:
+
+  - particle:
       position: [0]
-      velocity: [-100]
+      velocity: [-1]
       r: 1.0
       m: 10.0
       q: [0.0, 0.0, 1.0]
-      color: "green"
+      color: "red"
     randomPositions: [512]
+    randomGaussVelocities: [.01]
     number: 2000
+
   - particle:
       position: [0]
-      velocity: [100]
+      velocity: [1]
       r: 1.0
       m: 10.0
       q: [-0.0, 0.0, -1.0]
-      color: "green"
+      color: "blue"
     randomPositions: [512]
+    randomGaussVelocities: [.01]
     number: 2000
-
-
 
 # Generated panel code:
 panels:
   phaseSpacePanel:
     automaticScaling: false
-    scaleFactor: 0.05
+    scaleFactor: 5.0E-4
   windowHeight: 1056
   windowWidth: 1936
-
-
