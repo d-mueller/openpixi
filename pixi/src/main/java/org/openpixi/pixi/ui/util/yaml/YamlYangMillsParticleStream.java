@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.openpixi.pixi.physics.Settings;
-import org.openpixi.pixi.physics.particles.YangMillsParticle;
+import org.openpixi.pixi.physics.particles.IParticle;
 
 public class YamlYangMillsParticleStream {
 	public YamlYangMillsParticle particle;
@@ -26,7 +26,7 @@ public class YamlYangMillsParticleStream {
 	 * @param settings Settings object to which particles are added.
 	 */
 	public void applyTo(Settings settings) {
-		YangMillsParticle p;
+		IParticle p;
 		numberOfDimensions = settings.getNumberOfDimensions();
 		double[] distances = new double[numberOfDimensions];
 		double number = 0;
@@ -43,7 +43,7 @@ public class YamlYangMillsParticleStream {
 
 			for (int n = 0; n < number; n++)
 			{
-				p = particle.getParticle(settings.getNumberOfDimensions(), settings.getNumberOfColors());
+				p = particle.getParticle(settings);
 				for(int i = 0; i < numberOfDimensions; i++) {
 					p.addPosition(i, n * distances[i]);
 					p.addPrevPosition(i, n * distances[i]);
@@ -55,7 +55,7 @@ public class YamlYangMillsParticleStream {
 		}
 	}
 
-	private void applyRandomModifications(YangMillsParticle p) {
+	private void applyRandomModifications(IParticle p) {
 
 		if(this.randomPositions != null)
 			for(int i = 0; i < numberOfDimensions; i++) {

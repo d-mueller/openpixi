@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import org.openpixi.pixi.physics.Settings;
+import org.openpixi.pixi.physics.particles.Wong1DParticle;
 import org.openpixi.pixi.physics.particles.YangMillsParticle;
 
 public class YamlYangMillsParticle {
@@ -17,7 +18,7 @@ public class YamlYangMillsParticle {
 
 	public void applyTo(Settings settings) {
 
-		YangMillsParticle p = getParticle(settings.getNumberOfDimensions(), settings.getNumberOfColors());
+		Wong1DParticle p = getParticle(settings);
 
 		settings.addParticle(p);
 	}
@@ -27,8 +28,8 @@ public class YamlYangMillsParticle {
 	 * YAML document to it.
 	 * @return new particle
 	 */
-	public YangMillsParticle getParticle(int numberOfDimensions, int numberOfColors) {
-		YangMillsParticle p = new YangMillsParticle(numberOfDimensions, numberOfColors);
+	public Wong1DParticle getParticle(Settings settings) {
+		Wong1DParticle p = new Wong1DParticle(settings.getNumberOfDimensions(), settings.getNumberOfColors());
 
 
 		if (position != null) {
@@ -50,10 +51,11 @@ public class YamlYangMillsParticle {
 			p.mass = m;
 		}
 
+		double unitFactor = settings.getCouplingConstant() * settings.getGridStep();
 		if (q != null)
 			for(int c = 0; c < q.size(); c++) {
-				p.Q0.set(c, q.get(c));
-				p.Q1.set(c, q.get(c));
+				p.Q0.set(c, q.get(c) * unitFactor);
+				p.Q1.set(c, q.get(c) * unitFactor);
 			}
 
 		if (color != null) {
