@@ -50,23 +50,6 @@ public class YamlSettings {
         settings.setCouplingConstant(1.0);
         settings.setNumOfThreads(4);
 
-		// Custom settings:
-		if(simulationType != null) {
-			HashMap<String, SimulationType> map = new HashMap<String, SimulationType>();
-			map.put("temporal yang-mills", SimulationType.TemporalYangMills);
-			map.put("temporal cgc", SimulationType.TemporalCGC);
-			map.put("temporal cgc ngp", SimulationType.TemporalCGCNGP);
-			map.put("lorenz yang-mills", SimulationType.LorenzYangMills);
-			map.put("boost-invariant cgc", SimulationType.BoostInvariantCGC);
-			map.put("wong 1d ngp", SimulationType.Wong1DNGP);
-
-			if(map.containsKey(simulationType)) {
-				settings.setSimulationType(map.get(simulationType));
-			} else {
-				throw new RuntimeException("Unknown simulation type specified in YAML file.");
-			}
-		}
-
 		if (timeStep != null) {
 			settings.setTimeStep(timeStep);
 		}
@@ -104,6 +87,23 @@ public class YamlSettings {
 				for (int i = 0; i < gridCells.size(); i++) {
 					settings.setGridCells(i, gridCells.get(i));
 				}
+			}
+		}
+
+		// Custom settings:
+		if(simulationType != null) {
+			HashMap<String, SimulationType> map = new HashMap<String, SimulationType>();
+			map.put("temporal yang-mills", SimulationType.TemporalYangMills);
+			map.put("temporal cgc", SimulationType.TemporalCGC);
+			map.put("temporal cgc ngp", SimulationType.TemporalCGCNGP);
+			map.put("lorenz yang-mills", SimulationType.LorenzYangMills);
+			map.put("boost-invariant cgc", SimulationType.BoostInvariantCGC);
+			map.put("wong 1d ngp", SimulationType.Wong1DNGP);
+
+			if(map.containsKey(simulationType)) {
+				settings.setSimulationType(map.get(simulationType));
+			} else {
+				throw new RuntimeException("Unknown simulation type specified in YAML file.");
 			}
 		}
 
