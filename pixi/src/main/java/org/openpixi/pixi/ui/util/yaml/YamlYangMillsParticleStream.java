@@ -44,8 +44,10 @@ public class YamlYangMillsParticleStream {
 			for (int n = 0; n < number; n++)
 			{
 				p = particle.getParticle(settings.getNumberOfDimensions(), settings.getNumberOfColors());
-				for(int i = 0; i < numberOfDimensions; i++)
+				for(int i = 0; i < numberOfDimensions; i++) {
 					p.addPosition(i, n * distances[i]);
+					p.addPrevPosition(i, n * distances[i]);
+				}
 
 				applyRandomModifications(p);
 				settings.addParticle(p);
@@ -56,16 +58,22 @@ public class YamlYangMillsParticleStream {
 	private void applyRandomModifications(YangMillsParticle p) {
 
 		if(this.randomPositions != null)
-			for(int i = 0; i < numberOfDimensions; i++)
-				p.addPosition(i, random.nextDouble() * this.randomPositions.get(i));
+			for(int i = 0; i < numberOfDimensions; i++) {
+				double r = random.nextDouble() * this.randomPositions.get(i);
+				p.addPosition(i, r);
+				p.addPrevPosition(i, r);
+			}
 
 		if(this.randomVelocities != null)
 			for(int i = 0; i < numberOfDimensions; i++)
 				p.addVelocity(i, random.nextDouble() * this.randomVelocities.get(i));
 
 		if(this.randomGaussPositions != null)
-			for(int i = 0; i < numberOfDimensions; i++)
-				p.addPosition(i, random.nextGaussian() * this.randomGaussPositions.get(i));
+			for(int i = 0; i < numberOfDimensions; i++) {
+				double r = random.nextGaussian() * this.randomGaussPositions.get(i);
+				p.addPosition(i, r);
+				p.addPrevPosition(i, r);
+			}
 
 		if(this.randomGaussVelocities != null)
 			for(int i = 0; i < numberOfDimensions; i++)

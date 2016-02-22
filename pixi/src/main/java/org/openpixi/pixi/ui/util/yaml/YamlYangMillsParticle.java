@@ -29,11 +29,14 @@ public class YamlYangMillsParticle {
 	 */
 	public YangMillsParticle getParticle(int numberOfDimensions, int numberOfColors) {
 		YangMillsParticle p = new YangMillsParticle(numberOfDimensions, numberOfColors);
-		
 
-		if(position != null)
-			for(int i = 0; i < position.size(); i++)
+
+		if (position != null) {
+			for (int i = 0; i < position.size(); i++) {
 				p.setPosition(i, position.get(i));
+				p.setPrevPosition(i, position.get(i));
+			}
+		}
 
 		if(velocity != null)
 			for(int i = 0; i < velocity.size(); i++)
