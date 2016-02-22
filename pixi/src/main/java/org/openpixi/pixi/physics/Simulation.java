@@ -221,11 +221,6 @@ public class Simulation {
 				settings.getParticleIterator());
 
 		grid = new Grid(settings);
-		if (settings.useGrid()) {
-			turnGridForceOn();
-		} else {
-			turnGridForceOff();
-		}
 
 		// Regions
 		if(settings.isEvaluationRegionEnabled()) {
@@ -262,29 +257,6 @@ public class Simulation {
 		initialize();
 	}
 
-	public void turnGridForceOn() {
-		if (!usingGridForce) {
-			if(relativistic == true) {
-				gridForce = new SimpleGridForceRelativistic(this);
-			} else {
-				gridForce = new SimpleGridForce();
-			}
-			f.add(gridForce);
-			usingGridForce = true;
-		}
-        if(!f.forces.contains(gridForce)){
-            f.add(gridForce);
-        }
-	}
-
-	public void turnGridForceOff() {
-		if (usingGridForce) {
-			f.remove(gridForce);
-			usingGridForce = false;
-		}
-	}
-
-
 	/**
 	 * Initialization step.
 	 * 1) Update links from U(-dt/2) to U(dt/2) using E(0)
@@ -304,14 +276,20 @@ public class Simulation {
 		 * We also compute both internal and external currents at t = -at/2 from the given particle velocities
 		 * (specified also at t = -at/2) and determine new velocities at t = at/2.
 		 */
+
+		// Update gauge links using initial chromoelectric fields.
 		grid.updateLinks(tstep);
+
 
 		// Interpolate charge density
 		grid.resetCharge();
 		interpolation.interpolateChargedensity(particles, grid);
 
+		// Interpolate fields to particles (important for velocity update)
+		interpolation.interpolateToParticle(particles, grid);
+
 		// Update particle velocities
-		//updateVelocities();
+		mover.updateVelocities(particles,f, grid, tstep);
 
 		// Update particle positions and charges (without reassigning values)
 		mover.updatePositions(particles, f, grid, tstep);
@@ -379,7 +357,7 @@ public class Simulation {
 		interpolation.interpolateChargedensity(particles, grid);
 
 		// 7) Update particle velocities
-		//updateVelocities();
+		mover.updateVelocities(particles,f, grid, tstep);
 
 		// 8) Update particle positions
 		mover.updatePositions(particles, f, grid, tstep);
