@@ -1,21 +1,11 @@
 package org.openpixi.pixi.ui.util.yaml;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.openpixi.pixi.physics.GeneralBoundaryType;
 import org.openpixi.pixi.physics.Settings;
 import org.openpixi.pixi.physics.SimulationType;
-import org.openpixi.pixi.physics.fields.EmptyPoissonSolver;
-import org.openpixi.pixi.physics.fields.LorenzYangMillsSolver;
-import org.openpixi.pixi.physics.fields.currentgenerators.ParticleLCCurrent;
-import org.openpixi.pixi.physics.fields.fieldgenerators.IFieldGenerator;
-import org.openpixi.pixi.physics.fields.currentgenerators.ICurrentGenerator;
-import org.openpixi.pixi.physics.fields.TemporalYangMillsSolver;
-import org.openpixi.pixi.physics.grid.EmptyInterpolator;
 import org.openpixi.pixi.physics.movement.solver.LeapFrogRelativisticParticleSolver;
-import org.openpixi.pixi.diagnostics.Diagnostics;
 
 /**
  * Generic settings class into which the YAML parser parses
@@ -68,6 +58,7 @@ public class YamlSettings {
 			map.put("temporal cgc ngp", SimulationType.TemporalCGCNGP);
 			map.put("lorenz yang-mills", SimulationType.LorenzYangMills);
 			map.put("boost-invariant cgc", SimulationType.BoostInvariantCGC);
+			map.put("wong 1d ngp", SimulationType.Wong1DNGP);
 
 			if(map.containsKey(simulationType)) {
 				settings.setSimulationType(map.get(simulationType));

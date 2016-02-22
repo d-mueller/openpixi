@@ -522,6 +522,16 @@ public class Settings {
 				break;
 			case BoostInvariantCGC:
 				break;
+			case Wong1DNGP:
+				setBoundary(GeneralBoundaryType.Periodic);
+				setFieldSolver(new TemporalYangMillsSolver());
+				setParticleSolver(new Wong1DSolver());
+				setInterpolator(new Wong1DInterpolationNGP());
+				setPoissonSolver(new Wong1DPoissonSolver());
+				List<Force> forces = new ArrayList<Force>();
+				forces.add(new Wong1DForce(this.numberOfDimensions, this.getNumberOfColors(), this.couplingConstant));
+				setForces(forces);
+				break;
 		}
 	}
 
