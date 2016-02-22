@@ -39,15 +39,13 @@ public class PhaseSpacePanel extends AnimationPanel {
 		Simulation s = getSimulationAnimation().getSimulation();
 		/** Scaling factor for the displayed panel in x-direction*/
 		double sx = getWidth() / s.getWidth();
-		/** Scaling factor for the displayed panel in y-direction*/
-		double sy = getHeight() / s.getHeight();
 
 		double panelHeight = getHeight();
 
 		scaleProperties.resetAutomaticScale();
 
 		for (int i = 0; i < s.particles.size(); i++) {
-			IParticle par = (IParticle) s.particles.get(i);
+			IParticle par = s.particles.get(i);
 			graph.setColor(par.getDisplayColor());
 			double radius = par.getRadius();
 			int width = (int) (2*sx*radius);
