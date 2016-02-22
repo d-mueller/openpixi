@@ -1,0 +1,78 @@
+simulationType: wong 1d ngp
+gridStep: 1
+couplingConstant: 1
+numberOfDimensions: 1
+numberOfColors: 2
+numberOfThreads: 8
+gridCells: [512]
+timeStep: 0.5
+duration: 0
+
+
+streams:
+  - particle:
+      position: [0]
+      velocity: [-100]
+      r: 1.0
+      m: 10.0
+      q: [1.0, -0.0, 0.0]
+      color: "red"
+    randomPositions: [512]
+    number: 2000
+  - particle:
+      position: [0]
+      velocity: [100]
+      r: 1.0
+      m: 10.0
+      q: [-1.0, 0.0, 0.0]
+      color: "red"
+    randomPositions: [512]
+    number: 2000
+  - particle:
+      position: [0]
+      velocity: [-100]
+      r: 1.0
+      m: 10.0
+      q: [0.0, -1.0, 0.0]
+      color: "blue"
+    randomPositions: [512]
+    number: 2000
+  - particle:
+      position: [0]
+      velocity: [100]
+      r: 1.0
+      m: 10.0
+      q: [-0.0, 1.0, 0.0]
+      color: "blue"
+    randomPositions: [512]
+    number: 2000
+  - particle:
+      position: [0]
+      velocity: [-100]
+      r: 1.0
+      m: 10.0
+      q: [0.0, 0.0, 1.0]
+      color: "green"
+    randomPositions: [512]
+    number: 2000
+  - particle:
+      position: [0]
+      velocity: [100]
+      r: 1.0
+      m: 10.0
+      q: [-0.0, 0.0, -1.0]
+      color: "green"
+    randomPositions: [512]
+    number: 2000
+
+
+
+# Generated panel code:
+panels:
+  phaseSpacePanel:
+    automaticScaling: false
+    scaleFactor: 0.05
+  windowHeight: 1056
+  windowWidth: 1936
+
+
