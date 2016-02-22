@@ -26,6 +26,8 @@ public interface ParticleSolver {
 	
 	void updatePosition(IParticle p, Force f, double step);
 
+	void updateVelocity(IParticle p, Force f, double step);
+
 	void updateCharge(IParticle p, Force f, double step);
 	
 	void prepare(IParticle p, Force f, double step);

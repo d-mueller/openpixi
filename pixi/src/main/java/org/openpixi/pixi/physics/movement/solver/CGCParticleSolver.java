@@ -20,6 +20,11 @@ public class CGCParticleSolver implements ParticleSolver {
 		}
 	}
 
+	public void updateVelocity(IParticle p, Force f, double step)
+	{
+
+	}
+
 
 	public void updateCharge(IParticle p, Force f, double dt) {
 		CGCParticle P = (CGCParticle) p;

@@ -25,6 +25,7 @@ public class ParticleMover {
 	private double timeStep;
 
 	private PositionUpdate positionUpdate = new PositionUpdate();
+	private VelocityUpdate velocityUpdate = new VelocityUpdate();
 	private ChargeUpdate chargeUpdate = new ChargeUpdate();
 	private Prepare prepare = new Prepare();
 	private Complete complete = new Complete();
@@ -56,6 +57,12 @@ public class ParticleMover {
 		particleIterator.execute(particles, positionUpdate);
 	}
 
+	public void updateVelocities(List<IParticle> particles, Force force, Grid g, double timeStep) {
+		this.force = force;
+		this.timeStep = timeStep;
+		particleIterator.execute(particles, velocityUpdate);
+	}
+
 	public void updateCharges(List<IParticle> particles, Force force, Grid g, double timeStep) {
 		this.force = force;
 		this.timeStep = timeStep;
@@ -85,6 +92,12 @@ public class ParticleMover {
 		public void execute(IParticle particle) {
 			particleSolver.updatePosition(particle, force, timeStep);
 			boundaries.applyOnParticle(particle);
+		}
+	}
+
+	private class VelocityUpdate implements ParticleAction {
+		public void execute(IParticle particle) {
+			particleSolver.updateVelocity(particle, force, timeStep);
 		}
 	}
 
