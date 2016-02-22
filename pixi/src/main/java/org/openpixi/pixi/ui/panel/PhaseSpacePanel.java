@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.Box;
 
+import org.openpixi.pixi.physics.RelativisticVelocity;
 import org.openpixi.pixi.physics.Simulation;
 import org.openpixi.pixi.physics.particles.IParticle;
 import org.openpixi.pixi.ui.SimulationAnimation;
@@ -17,11 +18,13 @@ import org.openpixi.pixi.ui.panel.properties.ScaleProperties;
 public class PhaseSpacePanel extends AnimationPanel {
 
 	public ScaleProperties scaleProperties;
+	private RelativisticVelocity relativisticVelocity;
 
 	/** Constructor */
 	public PhaseSpacePanel(SimulationAnimation simulationAnimation) {
 		super(simulationAnimation);
 		scaleProperties = new ScaleProperties(simulationAnimation);
+		relativisticVelocity = new RelativisticVelocity(simulationAnimation.getSimulation().getSpeedOfLight());
 	}
 
 	/** Display the particles */
@@ -50,7 +53,8 @@ public class PhaseSpacePanel extends AnimationPanel {
 			double radius = par.getRadius();
 			int width = (int) (2*sx*radius);
 			int height = (int) (2*sx*radius);
-			double velocity = par.getVelocity(0);
+			double gamma = relativisticVelocity.calculateGamma(par);
+			double velocity = par.getVelocity(0) / gamma;
 			scaleProperties.putValue(velocity);
 			double position = (0.5 + scaleV * velocity) * panelHeight;
 			if(width > 2 && height > 2) {
