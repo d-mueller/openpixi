@@ -31,6 +31,9 @@ public class CGCParticle extends YangMillsParticle {
 			p.acc[i] = this.acc[i];
 		}
 
+		p.Q0 = this.Q0.copy();
+		p.Q1 = this.Q1.copy();
+
 		p.setRadius(this.r);
 		p.setDisplayColor(this.col);
 		p.updateCharge = this.updateCharge;

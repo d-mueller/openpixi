@@ -139,7 +139,10 @@ public class YangMillsParticle implements IParticle, Serializable {
 			p.acc[i] = this.acc[i];
 		}
 
+		p.Q0 = this.Q0.copy();
+		p.Q1 = this.Q1.copy();
 		p.mass = this.mass;
+
 		p.setRadius(this.r);
 		p.setDisplayColor(this.col);
 
