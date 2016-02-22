@@ -1,8 +1,6 @@
 package org.openpixi.pixi.physics.grid;
 
 import org.openpixi.pixi.math.AlgebraElement;
-import org.openpixi.pixi.math.GroupElement;
-import org.openpixi.pixi.physics.particles.CGCParticle;
 import org.openpixi.pixi.physics.particles.IParticle;
 import org.openpixi.pixi.physics.particles.Wong1DParticle;
 import org.openpixi.pixi.physics.util.GridFunctions;
