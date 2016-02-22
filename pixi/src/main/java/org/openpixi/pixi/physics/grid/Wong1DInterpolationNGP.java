@@ -65,13 +65,14 @@ public class Wong1DInterpolationNGP implements  InterpolatorAlgorithm {
 		int[] ngpOld = GridFunctions.nearestGridPoint(oldPosition, as);
 		int[] ngpNew = GridFunctions.nearestGridPoint(newPosition, as);
 
+		int cellIndexOld = g.getCellIndex(ngpOld);
+		int cellIndexNew = g.getCellIndex(ngpNew);
+
 		if(ngpOld[0] == ngpNew[0]) {
 			// one cell move: do nothing!
 			//P.U = identity;
 		} else {
 			// two cell move
-			int cellIndexOld = g.getCellIndex(ngpOld);
-			int cellIndexNew = g.getCellIndex(ngpNew);
 
 			if(P.vel[0] > 0) {
 				P.U = g.getUnext(cellIndexOld, 0);
@@ -82,6 +83,6 @@ public class Wong1DInterpolationNGP implements  InterpolatorAlgorithm {
 		}
 
 		// Interpolate chromoelectric field
-		P.E = g.getE(ngpNew[0], 0);
+		P.E = g.getE(cellIndexNew, 0);
 	}
 }

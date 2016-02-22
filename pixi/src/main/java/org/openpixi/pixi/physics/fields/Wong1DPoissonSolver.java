@@ -38,7 +38,7 @@ public class Wong1DPoissonSolver implements PoissonSolver {
 			for (int i = 1; i < numberOfCells; i++) {
 				int l = g.shift(i, 0, -1);
 				int r = g.shift(i, 0, 1);
-				double E = (fftArray[fft.getFFTArrayIndex(l)] - fftArray[fft.getFFTArrayIndex(r)]) / (2 * as);
+				double E = (fftArray[fft.getFFTArrayIndex(r)] - fftArray[fft.getFFTArrayIndex(l)]) / (2 * as);
 				g.getE(i, 0).set(j, E);
 			}
 		}
