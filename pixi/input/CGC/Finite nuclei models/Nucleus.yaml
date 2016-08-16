@@ -4,9 +4,9 @@ couplingConstant: 2
 numberOfDimensions: 3
 numberOfColors: 2
 numberOfThreads: 8
-gridCells: [128, 32, 32]
+gridCells: [64, 32, 32]
 timeStep: 0.5
-duration: 64
+duration: 96
 evaluationRegion:
   enabled: true
   point1: [2, 0, 0]
@@ -23,33 +23,30 @@ initialConditions:
     tadpoleFilename: tadpole_test.dat
     computeDipole: true
     dipoleFilename: dipole_test.dat
-    MVModel:
+    Nucleus:
       - direction: 0
         orientation: 1
         longitudinalLocation: 32
-        longitudinalWidth: 2
-        randomSeed: 5
-        mu: .2
+        longitudinalWidth: 4
+        mu: .3
+        transversalLocation: [16, 16]
+        transversalRadius: 8
+        surfaceThickness: 1
+        numberOfNucleons: 197
+        partonWidth: 2
+        nucleonWidth: 4
+        useConstituentQuarks: true
+        randomSeed: null
         ultravioletCutoffTransverse: 2
-        longitudinalCoherenceLength: 4
+        longitudinalCoherenceLength: .4
         infraredCoefficient: 0.2
-      - direction: 0
-        orientation: -1
-        longitudinalLocation: 96
-        longitudinalWidth: 2
-        randomSeed: 6
-        mu: .2
-        ultravioletCutoffTransverse: 2
-        longitudinalCoherenceLength: 4
-        infraredCoefficient: 0.2
-
 
 
 # Generated panel code:
 panels:
-  dividerLocation: 785
+  dividerLocation: 1024
   leftPanel:
-    dividerLocation: 484
+    dividerLocation: 483
     leftPanel:
       chartPanel:
         logarithmicScale: false
@@ -60,35 +57,41 @@ panels:
         - Energy density
     orientation: 0
     rightPanel:
-      dividerLocation: 386
+      dividerLocation: 506
       leftPanel:
         electricFieldPanel:
           automaticScaling: true
           colorIndex: 0
           directionIndex: 0
-          scaleFactor: 2500.0
+          scaleFactor: 25.0
           showCoordinates: x, i, 0
           showFields:
           - E
-          - B
           - Gauss
       orientation: 1
       rightPanel:
         electricFieldPanel:
-          automaticScaling: false
+          automaticScaling: true
           colorIndex: 0
           directionIndex: 1
           scaleFactor: 25.0
           showCoordinates: x, i, 4
           showFields:
           - E
-          - U
   orientation: 1
   rightPanel:
-    energyDensity2DGLPanel:
-      automaticScaling: false
-      data: Energy density
-      scaleFactor: 10000.0
-      showCoordinates: x, y, 16
+    dividerLocation: 415
+    leftPanel:
+      energyDensity2DGLPanel:
+        automaticScaling: false
+        data: Energy density
+        scaleFactor: 3.0E8
+        showCoordinates: x, y, 16
+    orientation: 0
+    rightPanel:
+      gaussViolation2DGLPanel:
+        automaticScaling: false
+        scaleFactor: 1.0E40
+        showCoordinates: x, y, 0
   windowHeight: 1053
   windowWidth: 1920
