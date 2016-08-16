@@ -1,8 +1,6 @@
 package org.openpixi.pixi.physics.movement.solver;
 
-import org.openpixi.pixi.math.AlgebraElement;
 import org.openpixi.pixi.physics.force.Force;
-import org.openpixi.pixi.physics.particles.CGCParticle;
 import org.openpixi.pixi.physics.particles.IParticle;
 import org.openpixi.pixi.physics.particles.SlimCGCParticle;
 
