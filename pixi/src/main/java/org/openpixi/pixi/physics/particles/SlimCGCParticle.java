@@ -49,15 +49,15 @@ public class SlimCGCParticle implements IParticle, Serializable {
 	}
 
 	public double[] getPosition() {
-	    return Arrays.copyOfRange(values, dim, 2*dim - 1);
+	    return Arrays.copyOfRange(values, dim, 2*dim);
 	}
 
 	public double[] getPrevPosition() {
-	    return Arrays.copyOfRange(values, 0, dim - 1);
+	    return Arrays.copyOfRange(values, 0, dim);
 	}
 
 	public double[] getVelocity() {
-		return Arrays.copyOfRange(values, 2*dim, 3*dim - 1);
+		return Arrays.copyOfRange(values, 2*dim, 3*dim);
 	}
 
 	public double getRadius() {
