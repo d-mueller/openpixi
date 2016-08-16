@@ -51,7 +51,7 @@ public class SlimCGCParticleInterpolationNGP implements  InterpolatorAlgorithm {
 		double as = g.getLatticeSpacing();
 
 		// "Floored" grid points of the particle
-		int[] gridPosOld = GridFunctions.nearestGridPoint(P.getPosition(), as);
+		int[] gridPosOld = GridFunctions.nearestGridPoint(P.getPrevPosition(), as);
 
 		// Cell indices
 		int cellIndexOld = g.getCellIndex(gridPosOld);

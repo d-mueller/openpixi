@@ -116,9 +116,9 @@ public class SlimCGCParticle implements IParticle, Serializable {
 	}
 
 	public void reassignValues() {
-		double[] tempPos = Arrays.copyOfRange(values, 0, dim-1);
+		double[] tempPos = Arrays.copyOfRange(values, 0, dim);
         System.arraycopy(values, dim, values, 0, dim);
-        System.arraycopy(values, dim, tempPos, 0, dim);
+        System.arraycopy(tempPos, 0, values, dim, dim);
 
 		AlgebraElement tempQ = Q0;
 		Q0 = Q1;
