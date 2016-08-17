@@ -2,6 +2,7 @@ package org.openpixi.pixi.diagnostics.methods;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.lang.management.GarbageCollectorMXBean;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class TimeMeasurement implements Diagnostics {
 	 * Initializes the TimeMeasurement object.
 	 * It sets the step interval and creates/deletes the output file.
 	 *
-	 * @param s    Instance of the simulation object
+	 * @param simulation    Instance of the simulation object
 	 */
 	public void initialize(Simulation simulation)
 	{
@@ -88,6 +89,32 @@ public class TimeMeasurement implements Diagnostics {
 
 			pw.write("step " + currentTime + "/" + totalTime + " (" + stepdt + "ms)\n");
 			pw.write("memory: " + memory + "gb (" + mempercent + "%)\n");
+
+			// Monitor garbage collection
+			long totalGarbageCollections = 0;
+			long garbageCollectionTime = 0;
+
+			for(GarbageCollectorMXBean gc :
+					ManagementFactory.getGarbageCollectorMXBeans()) {
+
+				long count = gc.getCollectionCount();
+
+				if(count >= 0) {
+					totalGarbageCollections += count;
+				}
+
+				long time = gc.getCollectionTime();
+
+				if(time >= 0) {
+					garbageCollectionTime += time;
+				}
+			}
+
+			pw.write("Total Garbage Collections: "
+					+ totalGarbageCollections + "\n");
+			pw.write("Total Garbage Collection Time (ms): "
+					+ garbageCollectionTime + "\n");
+
 
 			if (steps == simulation.getIterations()) {
 				// End of simulation
