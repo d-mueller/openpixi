@@ -102,7 +102,51 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 	 * @param particlesPerLink
 	 */
 	public void initializeParticles(Simulation s, int particlesPerLink) {
-		double cutoffCharge = 10E-22 * Math.pow( g * as, 2) / (Math.pow(as, 3) * particlesPerLink);
+		// Iterate through grid and find maximum charge in the grid.
+		double maxCharge = 0.0;
+		for (int i = 0; i < s.grid.getTotalNumberOfCells(); i++) {
+			double charge = Math.sqrt(gaussConstraint[i].square());
+			if(maxCharge < charge) {
+				maxCharge = charge;
+			}
+		}
+
+		// Set cutoff charge to small fraction of maximum charge.
+		//double cutoffCharge = 10E-12 * Math.pow( g * as, 1) / (Math.pow(as, 3) * particlesPerLink);
+		double cutoffCharge = maxCharge * 10E-12;
+
+		// Iterate through longitudinal sheets and find dimensions of the particle block.
+		int zStart = 0;
+		int zEnd =  s.grid.getNumCells(direction);
+		boolean foundStartOfBlock = false;
+		int longitudinalCells = s.grid.getNumCells(direction);
+		for (int z = 0; z < longitudinalCells; z++) {
+			// Find max charge in transverse plane
+			maxCharge = 0;
+			for (int k = 0; k < totalTransversalCells; k++) {
+				int[] transPos = GridFunctions.getCellPos(k, transversalNumCells);
+				int[] gridPos = GridFunctions.insertGridPos(transPos, direction, z);
+				int i = s.grid.getCellIndex(gridPos);
+
+				double charge = Math.sqrt(gaussConstraint[i].square());
+				if(charge > maxCharge) {
+					maxCharge = charge;
+				}
+			}
+			if(!foundStartOfBlock) {
+				if(maxCharge > cutoffCharge) {
+					zStart = z;
+					foundStartOfBlock = true;
+				}
+			} else {
+				if(maxCharge < cutoffCharge) {
+					zEnd = z;
+					break;
+				}
+			}
+		}
+		int blockWidth = zEnd - zStart;
+
 
 		ArrayList<ArrayList<SlimCGCParticle>> longitudinalParticleList = new ArrayList<ArrayList<SlimCGCParticle>>(totalTransversalCells);
 		for (int i = 0; i < totalTransversalCells; i++) {
@@ -112,45 +156,46 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 		double t0 = 0.0;	// Particles should be initialized at t = 0 and t = dt.
 		double FIX_ROUND_ERRORS = 10E-12 * as;
 		for (int i = 0; i < s.grid.getTotalNumberOfCells(); i++) {
-			for (int j = 0; j < particlesPerCell; j++) {
-				double x = (1.0 * j - particlesPerLink/2) / (particlesPerLink);
-				int[] gridPos = s.grid.getCellPos(i);
-				double dz = x * as;
+			int[] gridPos = s.grid.getCellPos(i);
+			int z = gridPos[direction];
+			if(z > zStart && z < zEnd) {
+				for (int j = 0; j < particlesPerCell; j++) {
+					double x = (1.0 * j - particlesPerLink / 2) / (particlesPerLink);
+					double dz = x * as;
 
-				// Particle position
-				double[] particlePosition0 = new double[gridPos.length];
-				double[] particlePosition1 = new double[gridPos.length];
-				for (int k = 0; k < gridPos.length; k++) {
-					particlePosition0[k] = gridPos[k] * as + FIX_ROUND_ERRORS;
-					particlePosition1[k] = gridPos[k] * as + FIX_ROUND_ERRORS;
-					if(k == direction) {
-						particlePosition0[k] += t0 * orientation + dz;
-						particlePosition1[k] += (t0 + at) * orientation + dz;
+					// Particle position
+					double[] particlePosition0 = new double[gridPos.length];
+					double[] particlePosition1 = new double[gridPos.length];
+					for (int k = 0; k < gridPos.length; k++) {
+						particlePosition0[k] = gridPos[k] * as + FIX_ROUND_ERRORS;
+						particlePosition1[k] = gridPos[k] * as + FIX_ROUND_ERRORS;
+						if (k == direction) {
+							particlePosition0[k] += t0 * orientation + dz;
+							particlePosition1[k] += (t0 + at) * orientation + dz;
+						}
 					}
-				}
 
 
-				AlgebraElement charge = this.interpolateChargeFromGrid(s, particlePosition0).mult(1.0 / particlesPerLink);
+					AlgebraElement charge = this.interpolateChargeFromGrid(s, particlePosition0).mult(1.0 / particlesPerLink);
 
 
-				// Particle velocity
-				double[] particleVelocity = new double[gridPos.length];
-				for (int k = 0; k < gridPos.length; k++) {
-					if(k == direction) {
-						particleVelocity[k] = 1.0 * orientation;
-					} else {
-						particleVelocity[k] = 0.0;
+					// Particle velocity
+					double[] particleVelocity = new double[gridPos.length];
+					for (int k = 0; k < gridPos.length; k++) {
+						if (k == direction) {
+							particleVelocity[k] = 1.0 * orientation;
+						} else {
+							particleVelocity[k] = 0.0;
+						}
 					}
-				}
 
-				SlimCGCParticle p = new SlimCGCParticle(s.getNumberOfDimensions(), s.getNumberOfColors(), direction);
-				p.pos0 = particlePosition0; // position at t = 0
-				p.pos1 = particlePosition1; // position at t = dt (optional)
-				p.vel = particleVelocity;   // particle velocity at t = -dt/2.
-				p.Q0 = charge;              // charge at t = 0
-				p.Q1 = charge.copy();       // charge at t = dt, assume that there is no parallel transport initially (also optional).
+					SlimCGCParticle p = new SlimCGCParticle(s.getNumberOfDimensions(), s.getNumberOfColors(), direction);
+					p.pos0 = particlePosition0; // position at t = 0
+					p.pos1 = particlePosition1; // position at t = dt (optional)
+					p.vel = particleVelocity;   // particle velocity at t = -dt/2.
+					p.Q0 = charge;              // charge at t = 0
+					p.Q1 = charge.copy();       // charge at t = dt, assume that there is no parallel transport initially (also optional).
 
-				if(charge.square() > cutoffCharge) {
 					s.particles.add(p);
 
 					// Add to extra particle array for charge refinement.
