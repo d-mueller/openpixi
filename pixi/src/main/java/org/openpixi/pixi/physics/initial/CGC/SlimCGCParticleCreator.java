@@ -140,38 +140,49 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 				}
 			} else {
 				if(maxCharge < cutoffCharge) {
-					zEnd = z;
+					zEnd = z - 1;
 					break;
 				}
 			}
 		}
-		int blockWidth = zEnd - zStart;
+		int blockWidth = zEnd - zStart + 1;
+		int totalNumberOfParticles = blockWidth * totalTransversalCells * particlesPerCell;
+		int[] blockSize = new int[s.getNumberOfDimensions()];
+		for (int i = 0; i < s.getNumberOfDimensions(); i++) {
+			if(i == direction) {
+				blockSize[i] = blockWidth;
+			} else {
+				blockSize[i] = s.grid.getNumCells(i);
+			}
+		}
 
 
 		ArrayList<ArrayList<SlimCGCParticle>> longitudinalParticleList = new ArrayList<ArrayList<SlimCGCParticle>>(totalTransversalCells);
 		for (int i = 0; i < totalTransversalCells; i++) {
 			longitudinalParticleList.add(new ArrayList<SlimCGCParticle>());
 		}
-		// Traverse through charge density and add particles by sampling the charge distribution
+		// Traverse through charge density within the block and add particles by sampling the charge distribution
 		double t0 = 0.0;	// Particles should be initialized at t = 0 and t = dt.
 		double FIX_ROUND_ERRORS = 10E-12 * as;
-		for (int i = 0; i < s.grid.getTotalNumberOfCells(); i++) {
-			int[] gridPos = s.grid.getCellPos(i);
-			int z = gridPos[direction];
-			if(z > zStart && z < zEnd) {
+		int particleIndex = 0;
+		for (int z = zStart; z <= zEnd; z++) {
+			for (int k = 0; k < totalTransversalCells; k++) {
+				int[] transPos = GridFunctions.getCellPos(k, transversalNumCells);
+				int[] gridPos = GridFunctions.insertGridPos(transPos, direction, z);
+
 				for (int j = 0; j < particlesPerCell; j++) {
 					double x = (1.0 * j - particlesPerLink / 2) / (particlesPerLink);
 					double dz = x * as;
 
 					// Particle position
-					double[] particlePosition0 = new double[gridPos.length];
-					double[] particlePosition1 = new double[gridPos.length];
-					for (int k = 0; k < gridPos.length; k++) {
-						particlePosition0[k] = gridPos[k] * as + FIX_ROUND_ERRORS;
-						particlePosition1[k] = gridPos[k] * as + FIX_ROUND_ERRORS;
-						if (k == direction) {
-							particlePosition0[k] += t0 * orientation + dz;
-							particlePosition1[k] += (t0 + at) * orientation + dz;
+					double[] particlePosition0 = new double[s.getNumberOfDimensions()];
+					double[] particlePosition1 = new double[s.getNumberOfDimensions()];
+					for (int n = 0; n < s.getNumberOfDimensions(); n++) {
+						particlePosition0[n] = gridPos[n] * as + FIX_ROUND_ERRORS;
+						particlePosition1[n] = gridPos[n] * as + FIX_ROUND_ERRORS;
+						if (n == direction) {
+							particlePosition0[n] += t0 * orientation + dz;
+							particlePosition1[n] += (t0 + at) * orientation + dz;
 						}
 					}
 
@@ -180,12 +191,12 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 
 
 					// Particle velocity
-					double[] particleVelocity = new double[gridPos.length];
-					for (int k = 0; k < gridPos.length; k++) {
-						if (k == direction) {
-							particleVelocity[k] = 1.0 * orientation;
+					double[] particleVelocity = new double[s.getNumberOfDimensions()];
+					for (int n = 0; n < s.getNumberOfDimensions(); n++) {
+						if (n == direction) {
+							particleVelocity[n] = 1.0 * orientation;
 						} else {
-							particleVelocity[k] = 0.0;
+							particleVelocity[n] = 0.0;
 						}
 					}
 
@@ -195,12 +206,15 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 					p.vel = particleVelocity;   // particle velocity at t = -dt/2.
 					p.Q0 = charge;              // charge at t = 0
 					p.Q1 = charge.copy();       // charge at t = dt, assume that there is no parallel transport initially (also optional).
+					p.particleIndex = particleIndex; // particle index within the block
 
 					s.particles.add(p);
 
 					// Add to extra particle array for charge refinement.
 					int transversalIndex = GridFunctions.getCellIndex(GridFunctions.reduceGridPos(gridPos, direction), transversalNumCells);
 					longitudinalParticleList.get(transversalIndex).add(p);
+
+					particleIndex++;
 				}
 			}
 		}

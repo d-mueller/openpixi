@@ -12,6 +12,7 @@ public class SlimCGCParticle extends YangMillsParticle {
 	public int direction;
 	public GroupElement U;
 	public boolean updateCharge;
+	public int particleIndex;
 
 	public SlimCGCParticle(int numberOfDimensions, int numberOfColors, int direction) {
 		super(numberOfDimensions, numberOfColors);
