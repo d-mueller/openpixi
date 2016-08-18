@@ -7,14 +7,14 @@ import org.openpixi.pixi.math.GroupElement;
  * This particle class is used for CGC simulations where the particles move in a certain direction along grid lines
  * without being affected by a force. The color charge is parallel transported along the fixed trajectory.
  */
-public class SlimCGCParticle extends YangMillsParticle {
+public class SuperCGCParticle extends YangMillsParticle {
 
 	public int direction;
 	public GroupElement U;
 	public boolean updateCharge;
 	public int particleIndex;
 
-	public SlimCGCParticle(int numberOfDimensions, int numberOfColors, int direction) {
+	public SuperCGCParticle(int numberOfDimensions, int numberOfColors, int direction) {
 		super(numberOfDimensions, numberOfColors);
 		this.direction = direction;
 		this.U = (new ElementFactory(numberOfColors)).groupIdentity();
@@ -22,7 +22,7 @@ public class SlimCGCParticle extends YangMillsParticle {
 	}
 
 	public IParticle copy() {
-		SlimCGCParticle p = new SlimCGCParticle(this.numberOfDimensions, this.numberOfColors, this.direction);
+		SuperCGCParticle p = new SuperCGCParticle(this.numberOfDimensions, this.numberOfColors, this.direction);
 		p.U = this.U.copy();
 
 		for (int i = 0; i < this.numberOfDimensions; i++) {

@@ -2,9 +2,8 @@ package org.openpixi.pixi.physics.grid;
 
 import org.openpixi.pixi.math.AlgebraElement;
 import org.openpixi.pixi.math.GroupElement;
-import org.openpixi.pixi.physics.particles.CGCParticle;
 import org.openpixi.pixi.physics.particles.IParticle;
-import org.openpixi.pixi.physics.particles.SlimCGCParticle;
+import org.openpixi.pixi.physics.particles.SuperCGCParticle;
 import org.openpixi.pixi.physics.util.GridFunctions;
 
 /**
@@ -12,9 +11,9 @@ import org.openpixi.pixi.physics.util.GridFunctions;
  * merely act as 'static' sources for the current. It is assumed that this kind of particle moves along a grid axis such
  * that there is no ambiguity in defining parallel transport for the color charges of the particles.
  */
-public class SlimCGCParticleInterpolationNGP implements  InterpolatorAlgorithm {
+public class SuperCGCParticleInterpolationNGP implements  InterpolatorAlgorithm {
 	public void interpolateToGrid(IParticle p, Grid g) {
-		SlimCGCParticle P = (SlimCGCParticle) p;
+		SuperCGCParticle P = (SuperCGCParticle) p;
 		GroupElement identity = g.getElementFactory().groupIdentity();
 
 		double at = g.getTemporalSpacing();
@@ -47,7 +46,7 @@ public class SlimCGCParticleInterpolationNGP implements  InterpolatorAlgorithm {
 	}
 
 	public void interpolateChargedensity(IParticle p, Grid g) {
-		SlimCGCParticle P = (SlimCGCParticle) p;
+		SuperCGCParticle P = (SuperCGCParticle) p;
 
 		double as = g.getLatticeSpacing();
 		int direction = P.direction;
@@ -64,7 +63,7 @@ public class SlimCGCParticleInterpolationNGP implements  InterpolatorAlgorithm {
 
 	public void interpolateToParticle(IParticle p, Grid g) {
 		// Compute parallel transport for the particle.
-		SlimCGCParticle P = (SlimCGCParticle) p;
+		SuperCGCParticle P = (SuperCGCParticle) p;
 		double as = g.getLatticeSpacing();
 		int direction = P.direction;
 

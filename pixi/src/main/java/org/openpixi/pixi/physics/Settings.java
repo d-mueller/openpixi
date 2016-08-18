@@ -526,11 +526,11 @@ public class Settings {
 				setParticleSolver(new CGCParticleSolver());
 				setInterpolator(new CGCParticleInterpolationNGP());
 				break;
-			case TemporalSlimCGCNGP:
+			case TemporalOptimizedCGCNGP:
 				setBoundary(GeneralBoundaryType.Absorbing);
 				setFieldSolver(new FastTYMSolver());
-				setParticleSolver(new SlimCGCParticleSolver());
-				setInterpolator(new SlimCGCParticleInterpolationNGP());
+				setParticleSolver(new SuperCGCParticleSolver());
+				setInterpolator(new SuperCGCParticleInterpolationNGP());
 				break;
 			case LorenzYangMills:
 				setBoundary(GeneralBoundaryType.Periodic);

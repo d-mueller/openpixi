@@ -3,7 +3,7 @@ package org.openpixi.pixi.physics.initial.CGC;
 import org.openpixi.pixi.math.AlgebraElement;
 import org.openpixi.pixi.physics.Simulation;
 import org.openpixi.pixi.physics.particles.IParticle;
-import org.openpixi.pixi.physics.particles.SlimCGCParticle;
+import org.openpixi.pixi.physics.particles.SuperCGCParticle;
 import org.openpixi.pixi.physics.util.GridFunctions;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * This particle generator creates particles to correctly interpolate the charge density
  * on the grid according to CGC initial conditions.
  */
-public class SlimCGCParticleCreator implements IParticleCreator {
+public class SuperCGCParticleCreator implements IParticleCreator {
 
 	/**
 	 * Direction of movement of the charge density. Values range from 0 to numberOfDimensions-1.
@@ -157,9 +157,9 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 		}
 
 
-		ArrayList<ArrayList<SlimCGCParticle>> longitudinalParticleList = new ArrayList<ArrayList<SlimCGCParticle>>(totalTransversalCells);
+		ArrayList<ArrayList<SuperCGCParticle>> longitudinalParticleList = new ArrayList<ArrayList<SuperCGCParticle>>(totalTransversalCells);
 		for (int i = 0; i < totalTransversalCells; i++) {
-			longitudinalParticleList.add(new ArrayList<SlimCGCParticle>());
+			longitudinalParticleList.add(new ArrayList<SuperCGCParticle>());
 		}
 		// Traverse through charge density within the block and add particles by sampling the charge distribution
 		double t0 = 0.0;	// Particles should be initialized at t = 0 and t = dt.
@@ -200,7 +200,7 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 						}
 					}
 
-					SlimCGCParticle p = new SlimCGCParticle(s.getNumberOfDimensions(), s.getNumberOfColors(), direction);
+					SuperCGCParticle p = new SuperCGCParticle(s.getNumberOfDimensions(), s.getNumberOfColors(), direction);
 					p.pos0 = particlePosition0; // position at t = 0
 					p.pos1 = particlePosition1; // position at t = dt (optional)
 					p.vel = particleVelocity;   // particle velocity at t = -dt/2.
@@ -222,7 +222,7 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 		// Charge refinement
 		int numberOfIterations = 100;
 		for (int i = 0; i < totalTransversalCells; i++) {
-			ArrayList<SlimCGCParticle> particleList = longitudinalParticleList.get(i);
+			ArrayList<SuperCGCParticle> particleList = longitudinalParticleList.get(i);
 			// 2nd order refinement
 			for (int iteration = 0; iteration < numberOfIterations; iteration++) {
 				for (int j = 0; j < particleList.size(); j++) {
@@ -240,13 +240,13 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 
 		// Make sure particle charges Q0 and Q1 are the same.
 		for(IParticle p : s.particles) {
-			SlimCGCParticle P = (SlimCGCParticle) p;
+			SuperCGCParticle P = (SuperCGCParticle) p;
 			P.Q1 = P.Q0.copy();
 		}
 
 	}
 
-	private void refine2(int i, ArrayList<SlimCGCParticle> list, int particlesPerLink) {
+	private void refine2(int i, ArrayList<SuperCGCParticle> list, int particlesPerLink) {
 		int jmod = i % particlesPerLink;
 		int n = list.size();
 		// Refinement can not be applied to the last charge in an NGP cell.
@@ -274,7 +274,7 @@ public class SlimCGCParticleCreator implements IParticleCreator {
 	}
 
 
-	private void refine4(int i, ArrayList<SlimCGCParticle> list, int particlesPerLink) {
+	private void refine4(int i, ArrayList<SuperCGCParticle> list, int particlesPerLink) {
 		int jmod = i % particlesPerLink;
 		int n = list.size();
 		// Refinement can not be applied to the last charge in an NGP cell.

@@ -49,7 +49,7 @@ public class CGCInitialCondition implements IInitialCondition {
 
 
 	public void initialize(Simulation s) {
-		if(s.getSimulationType() == SimulationType.TemporalSlimCGCNGP) {
+		if(s.getSimulationType() == SimulationType.TemporalOptimizedCGCNGP) {
 			// Reset all static objects needed for optimizations.
 		}
 	}
@@ -82,8 +82,8 @@ public class CGCInitialCondition implements IInitialCondition {
 			case TemporalCGCNGP:
 				initialParticleCreator = new LightConeNGPParticleCreator();
 				break;
-			case TemporalSlimCGCNGP:
-				initialParticleCreator = new SlimCGCParticleCreator();
+			case TemporalOptimizedCGCNGP:
+				initialParticleCreator = new SuperCGCParticleCreator();
 				break;
 			default:
 				System.out.println("CGCInitialCondition: simulation type not supported!");

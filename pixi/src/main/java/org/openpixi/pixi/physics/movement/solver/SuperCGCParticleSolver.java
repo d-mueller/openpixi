@@ -2,19 +2,18 @@ package org.openpixi.pixi.physics.movement.solver;
 
 import org.openpixi.pixi.math.AlgebraElement;
 import org.openpixi.pixi.physics.force.Force;
-import org.openpixi.pixi.physics.particles.CGCParticle;
 import org.openpixi.pixi.physics.particles.IParticle;
-import org.openpixi.pixi.physics.particles.SlimCGCParticle;
+import org.openpixi.pixi.physics.particles.SuperCGCParticle;
 
 /**
  * Particle solver for CGC simulations. The particles stay on fixed trajectories moving at light speed. The charge has
  * to be parallel transporting along the trajectory. It is assumed that particles move on a grid line such that parallel
  * transport using gauge links is well defined.
  */
-public class SlimCGCParticleSolver implements ParticleSolver {
+public class SuperCGCParticleSolver implements ParticleSolver {
 
 	public void updatePosition(IParticle p, Force f, double dt) {
-		SlimCGCParticle P = (SlimCGCParticle) p;
+		SuperCGCParticle P = (SuperCGCParticle) p;
 
 		for (int i = 0; i < P.pos0.length; i++) {
 			P.pos1[i] = P.pos0[i] + P.vel[i] * dt;
@@ -23,7 +22,7 @@ public class SlimCGCParticleSolver implements ParticleSolver {
 
 
 	public void updateCharge(IParticle p, Force f, double dt) {
-		SlimCGCParticle P = (SlimCGCParticle) p;
+		SuperCGCParticle P = (SuperCGCParticle) p;
 		if(P.updateCharge) {
 			// Charge has to be parallel transported.
 			P.Q1 = P.Q0.act(P.U.adj());
