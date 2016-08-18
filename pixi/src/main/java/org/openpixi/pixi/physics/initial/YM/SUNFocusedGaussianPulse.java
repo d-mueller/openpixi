@@ -81,6 +81,10 @@ public class SUNFocusedGaussianPulse implements IInitialCondition {
 		}
 	}
 
+	public void initialize(Simulation s) {
+
+	}
+
 	/**
 	 * Applies the pulse configuration to the grid.
 	 *

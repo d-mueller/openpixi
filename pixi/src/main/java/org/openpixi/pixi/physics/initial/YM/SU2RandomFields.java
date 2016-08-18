@@ -16,6 +16,11 @@ public class SU2RandomFields implements IInitialCondition {
 	public SU2RandomFields() {
 	}
 
+	public void initialize(Simulation s) {
+
+	}
+
+
 	public void applyInitialCondition(Simulation s) {
 		this.g = s.grid;
 		this.numberOfDimensions = s.getNumberOfDimensions();

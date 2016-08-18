@@ -263,6 +263,12 @@ public class Simulation {
 			c.initializeCurrent(this, currentGenerators.size());
 		}
 
+		// "Initialize" all initial conditions.
+		for(IInitialCondition ic : settings.getInitialConditions()) {
+			ic.initialize(this);
+		}
+
+		// Apply field configurations and add particles from initial conditions.
 		for(IInitialCondition ic : settings.getInitialConditions()) {
 			ic.applyInitialCondition(this);
 		}

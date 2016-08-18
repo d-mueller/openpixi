@@ -35,6 +35,11 @@ public class SU2PlaneWave implements IInitialCondition {
 		this.amplitudeMagnitude = amplitudeMagnitude;
 	}
 
+	public void initialize(Simulation s) {
+
+	}
+
+
 	public void applyInitialCondition(Simulation s) {
 		this.s = s;
 		this.grid = s.grid;

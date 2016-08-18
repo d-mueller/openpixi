@@ -43,6 +43,11 @@ public class SU2GaussianPulse implements IInitialCondition {
 		this.sigma = sigma;
 	}
 
+	public void initialize(Simulation s) {
+
+	}
+
+
 	public void applyInitialCondition(Simulation s) {
 		this.s = s;
 		this.grid = s.grid;

@@ -60,6 +60,10 @@ public class SU2FocusedGaussianPulse implements IInitialCondition {
 		this.th0 = directionSpherical[2];
 	}
 
+	public void initialize(Simulation s) {
+
+	}
+
 	public void applyInitialCondition(Simulation s) {
 		this.s = s;
 		this.grid = s.grid;

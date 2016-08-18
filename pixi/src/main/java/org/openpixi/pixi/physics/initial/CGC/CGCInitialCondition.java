@@ -48,6 +48,12 @@ public class CGCInitialCondition implements IInitialCondition {
 	public String dipoleFilename = "dipole.txt";
 
 
+	public void initialize(Simulation s) {
+		if(s.getSimulationType() == SimulationType.TemporalSlimCGCNGP) {
+			// Reset all static objects needed for optimizations.
+		}
+	}
+
 	/**
 	 * Applies CGC initial conditions.
 	 * @param s Reference to the Simulation object
