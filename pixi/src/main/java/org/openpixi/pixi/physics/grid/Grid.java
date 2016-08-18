@@ -49,6 +49,11 @@ public class Grid {
 	protected int numCells[];
 
 	/**
+	 * Total number of cells.
+	 */
+	protected int totalNumberOfCells;
+
+	/**
 	 * Spatial lattice spacing
 	 */
 	protected double as;
@@ -307,11 +312,7 @@ public class Grid {
 	 * @return Total number of cells in the grid.
 	 */
 	public int getTotalNumberOfCells() {
-		int numberOfCells = 1;
-		for (int i = 0; i < numDim; i++) {
-			numberOfCells *= getNumCells(i);
-		}
-		return numberOfCells;
+		return totalNumberOfCells;
 	}
 
 	/**
@@ -486,6 +487,12 @@ public class Grid {
 				}
 			}
 		}
+
+		int numberOfCells = 1;
+		for (int i = 0; i < numDim; i++) {
+			numberOfCells *= getNumCells(i);
+		}
+		totalNumberOfCells = numberOfCells;
 	
 	}
 
