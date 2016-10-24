@@ -1,0 +1,91 @@
+simulationType: temporal optimized cgc ngp
+gridSteps: [0.1, 0.5, 0.5]
+couplingConstant: 1.0
+numberOfDimensions: 3
+numberOfColors: 2
+numberOfThreads: 8
+gridCells: [128, 32, 32]
+timeStep: 0.025
+duration: 64
+evaluationRegion:
+  enabled: true
+  point1: [2, 0, 0]
+  point2: [-3, -1, -1]
+activeRegion:
+  enabled: true
+  point1: [1, 0, 0]
+  point2: [-2, -1, -1]
+
+initialConditions:
+  CGC:
+    poissonSolver: improved full
+    MVModelCoherent:
+      - direction: 0
+        orientation: 1
+        longitudinalLocation: 3.2
+        longitudinalWidth: 0.6
+        randomSeed: 5
+        mu: .1
+        ultravioletCutoffTransverse: 2
+        infraredCoefficient: 0.1
+        colorVector: [1, 0, 0]
+      - direction: 0
+        orientation: -1
+        longitudinalLocation: 9.6
+        longitudinalWidth: 0.6
+        randomSeed: 6
+        mu: .1
+        ultravioletCutoffTransverse: 2
+        infraredCoefficient: 0.1
+        colorVector: [0, 1, 0]
+
+
+
+
+# Generated panel code:
+panels:
+  dividerLocation: 770
+  leftPanel:
+    dividerLocation: 484
+    leftPanel:
+      chartPanel:
+        logarithmicScale: false
+        showCharts:
+        - Gauss law violation
+        - E squared
+        - B squared
+        - Energy density
+    orientation: 0
+    rightPanel:
+      dividerLocation: 379
+      leftPanel:
+        electricFieldPanel:
+          automaticScaling: true
+          colorIndex: 2
+          directionIndex: 0
+          scaleFactor: 2500.0
+          showCoordinates: x, i, 0
+          showFields:
+          - E
+          - B
+          - Gauss
+      orientation: 1
+      rightPanel:
+        electricFieldPanel:
+          automaticScaling: false
+          colorIndex: 0
+          directionIndex: 1
+          scaleFactor: 25.0
+          showCoordinates: x, i, 4
+          showFields:
+          - E
+          - U
+  orientation: 1
+  rightPanel:
+    energyDensity2DGLPanel:
+      automaticScaling: false
+      data: Energy density
+      scaleFactor: 1000000.0
+      showCoordinates: 63, x, y
+  windowHeight: 1053
+  windowWidth: 1920

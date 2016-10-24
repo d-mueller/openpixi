@@ -56,14 +56,23 @@ public class YamlMVModelCoherent {
 	 */
 	public Integer randomSeed;
 
+	/**
+	 * Use the colorVector to manipulate the color structure of the charge density.
+	 */
+	public double[] colorVector;
+
 	public CGCInitialCondition getInitialCondition() {
 		boolean useSeed = (randomSeed != null);
 		if(!useSeed) {
 			randomSeed = 0;
 		}
+
+		boolean useColorVector = (colorVector != null);
+
 		IInitialChargeDensity chargeDensity = new MVModelCoherent(direction, orientation, longitudinalLocation,
 				longitudinalWidth, mu, useSeed, randomSeed, ultravioletCutoffTransverse, ultravioletCutoffLongitudinal,
-				infraredCoefficient);
+				infraredCoefficient,
+				colorVector, useColorVector);
 
 		CGCInitialCondition initialCondition = new CGCInitialCondition();
 		initialCondition.setInitialChargeDensity(chargeDensity);
