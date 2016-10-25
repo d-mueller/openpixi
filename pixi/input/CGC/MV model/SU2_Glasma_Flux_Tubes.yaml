@@ -1,0 +1,53 @@
+# SU(2) Glasma Flux Tubes based on MV-model in a static box
+# Energy unit: 1fm^-1
+
+simulationType: temporal yang-mills
+gridStep: 0.005
+couplingConstant: 2
+numberOfDimensions: 3
+numberOfColors: 2
+gridCells: [1, 256, 256]
+timeStep: 0.00025
+duration: 1000
+numberOfThreads: 8
+
+initialConditions:
+  YM:
+    SU2GlasmaFluxTubes:
+      - direction: 0
+        mu: 2.5
+        ultravioletCutoffTransverse: 100.0
+        infraredCoefficient: 10.0
+
+# Generated panel code:
+panels:
+  dividerLocation: 422
+  leftPanel:
+    chartPanel:
+      logarithmicScale: true
+      showCharts:
+      - Gauss law violation
+      - E squared
+      - B squared
+  orientation: 1
+  rightPanel:
+    dividerLocation: 382
+    leftPanel:
+      electricFieldPanel:
+        automaticScaling: true
+        colorIndex: 0
+        directionIndex: 0
+        scaleFactor: 1.0E14
+        showCoordinates: 1, x, i
+        showFields:
+        - E
+        - U
+    orientation: 0
+    rightPanel:
+      energyDensity2DGLPanel:
+        automaticScaling: true
+        data: Energy density
+        scaleFactor: 1.0
+        showCoordinates: 1, x, y
+  windowHeight: 851
+  windowWidth: 1219

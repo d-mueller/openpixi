@@ -136,6 +136,53 @@ public class FourierFunctions {
 		return regulateChargeDensityGaussian(rho, numCells, UVT, longWidth, IR, direction, a, a);
 	}
 
+	/**
+	 * Regulate transverse (2D) charge density with a hard UV cutoff and a soft IR regulator.
+	 * @param rho      2D charge density
+	 * @param numCells transverse grid size
+	 * @param UVT      transverse UV cutoff
+	 * @param IR       transverse IR regulator
+	 * @param aT       transverse lattice spacing
+	 * @return         regulated charge density
+	 */
+	public static double[] regulateChargeDensity2D(double[] rho, int[] numCells, double UVT, double IR, double aT) {
+		int totalCells = numCells[0] * numCells[1];
+
+		DoubleFFTWrapper fft = new DoubleFFTWrapper(numCells);
+		double[] rhoReg = new double[fft.getFFTArraySize()]; // hardcoded for 3D, I know.
+		for (int i = 0; i < totalCells; i++) {
+			rhoReg[fft.getFFTArrayIndex(i)] = rho[i];
+		}
+		fft.complexForward(rhoReg);
+
+		// Remove global charge
+		rhoReg[0] = 0.0;
+		rhoReg[1] = 0.0;
+
+		// Apply momentum regulation
+		for (int i = 0; i < totalCells; i++) {
+			double kTeff2 = computeEffectiveTransverseMomentumSquared(i, numCells, aT);
+			double kT2 = computeTransverseMomentumSquared(i, numCells, aT);
+
+			// Apply hard UV regulation
+			if(kT2 <=  UVT * UVT && kT2 > 0) {
+				// Apply 'soft' IR regulation
+				double regulator = kTeff2 / (kTeff2 + IR * IR);
+				rhoReg[fft.getFFTArrayIndex(i)] *= regulator;
+				rhoReg[fft.getFFTArrayIndex(i)+1] *= regulator;
+			} else {
+				rhoReg[fft.getFFTArrayIndex(i)] = 0.0;
+				rhoReg[fft.getFFTArrayIndex(i)+1] = 0.0;
+			}
+		}
+
+		fft.complexInverse(rhoReg, true);
+		for (int i = 0; i < totalCells; i++) {
+			rho[i] = rhoReg[fft.getFFTArrayIndex(i)];
+		}
+		return rho;
+	}
+
 		/**
          * Solves the 2D transverse Poisson equation on the lattice.
          *
