@@ -67,6 +67,23 @@ public class MVModelCoherent implements IInitialChargeDensity {
 	private double infraredCoefficient;
 
 	/**
+	 * An extra parameter to change the color structure of the charge density. This vector has N_C^2-1 components
+	 * and is used to multiply it with the color components of the charge density.
+	 * Example N_C = 2:
+	 * A vector [1,1,1] does not change the distribution of color charges.
+	 * A vector [1,0,0] turns the color charge density 'red', because the other components are multiplied with zero.
+	 *
+	 * Note: this multiplication is done on the Lorenz gauge charge densities. The temporal gauge densities might still
+	 * look colorful due to the gauge transformation.
+	 */
+	private double[] colorVector;
+
+	/**
+	 * An option to turn the colorVector on or off.
+	 */
+	private boolean useColorVector;
+
+	/**
 	 * This class implements the color charge density of the MV model with coherent longitudinal structure. The fields
 	 * are regulated in Fourier space with a hard UV cutoff in the transverse and longitudinal directions, but the
 	 * longitudinal cutoff should not have any effect. The IR modes are regulated in the transverse plane with a
@@ -86,7 +103,8 @@ public class MVModelCoherent implements IInitialChargeDensity {
 	public MVModelCoherent(int direction, int orientation, double location, double longitudinalWidth, double mu,
 	                       boolean useSeed, int seed,
 	                       double ultravioletCutoffTransverse, double ultravioletCutoffLongitudinal,
-	                       double infraredCoefficient) {
+	                       double infraredCoefficient,
+	                       double[] colorVector, boolean useColorVector) {
 
 		this.direction = direction;
 		this.orientation = orientation;
@@ -98,12 +116,21 @@ public class MVModelCoherent implements IInitialChargeDensity {
 		this.ultravioletCutoffTransverse = ultravioletCutoffTransverse;
 		this.ultravioletCutoffLongitudinal = ultravioletCutoffLongitudinal;
 		this.infraredCoefficient = infraredCoefficient;
+		this.colorVector = colorVector;
+		this.useColorVector = useColorVector;
 	}
 
 	public void initialize(Simulation s) {
 		int totalCells = s.grid.getTotalNumberOfCells();
 		int numberOfColors = s.getNumberOfColors();
 		int numberOfComponents = (numberOfColors > 1) ? numberOfColors * numberOfColors - 1 : 1;
+
+		if(!useColorVector) {
+			colorVector = new double[numberOfComponents];
+			for (int i = 0; i < numberOfComponents; i++) {
+				colorVector[i] = 1.0;
+			}
+		}
 
 		this.rho = new AlgebraElement[totalCells];
 		for (int i = 0; i < s.grid.getTotalNumberOfCells(); i++) {
@@ -127,7 +154,7 @@ public class MVModelCoherent implements IInitialChargeDensity {
 			int totalTransCells = GridFunctions.getTotalNumberOfCells(transNumCells);
 			int longitudinalNumCells = s.grid.getNumCells(direction);
 			for (int i = 0; i < totalTransCells; i++) {
-				double charge = rand.nextGaussian() * mu * s.getCouplingConstant() / aT;
+				double charge = rand.nextGaussian() * mu * s.getCouplingConstant() / aT  * colorVector[j];
 				int[] transPos = GridFunctions.getCellPos(i, transNumCells);
 				for (int k = 0; k < longitudinalNumCells; k++) {
 					int[] gridPos = GridFunctions.insertGridPos(transPos, direction, k);
